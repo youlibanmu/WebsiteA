@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>麻雀動画切り抜き</title>
+</head>
+<body>
+<header>
+    <div class="title">麻雀切り抜き動画 レア度評価</div>
+    <div class="container1">
+        <img src="pictures/1.jpg" alt="" class="pic">
+        <img src="pictures/2.jpg" alt="" class="pic">
+    </div>
+</header>
+
+<div class="menu">
+    <ul id="nav">
+        <h1>【動画リスト】</h1>
+        <li>レア度
+            <ul>
+                <li><a href="#" class="filter" data-rating="1">★</a></li>
+                <li><a href="#" class="filter" data-rating="2">★★</a></li>
+                <li><a href="#" class="filter" data-rating="3">★★★</a></li>
+                <li><a href="#" class="filter" data-rating="4">★★★★</a></li>
+                <li><a href="#" class="filter" data-rating="5">★★★★★</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<main>
+    <div class="videos" id="video-list">
+
+            <div class="video-item" data-rating="3">
+                <iframe src="https://www.youtube.com/embed/UqtCW3wxFeo?si=Hl3KNOtD_KadE1S4&amp;start=1372" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <p class="description">白・中・ホンイツ　レア度：★★★</p>
+                </div>
+             <div class="video-item" data-rating="1">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/3ZbYOCLOE0o?si=r8RZxMwebtbaU_HY&amp;start=381" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <p class="description">リーチ・一盃口　レア度：★</p>
+                </div>
+
+
+                    <div class="video-item" data-rating="2">
+                        <iframe src="https://www.youtube.com/embed/bdQlfyz_CpU?si=aZ2LqMYZJOReltD9&amp;start=2106" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <p class="description">リーチ・ツモ・ピンフ・赤ドラ・裏ドラ　レア度：★★</p>
+                    </div>
+                    <div class="video-item" data-rating="3">
+                        <iframe src="https://www.youtube.com/embed/_6AnLbXSle4?si=Th9u5Xb2rl0T535F&amp;start=3226" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <p class="description">白・ホンイツ・ドラ　レア度：★★★</p>
+                    </div>
+
+
+                    <div class="video-item" data-rating="3">
+                        <iframe src="https://www.youtube.com/embed/VYGwOeU7tkQ?si=qrsHRFXiJ-v-M-3w&amp;start=1222" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <p class="description">ツモ・清一色　レア度：★★★</p>
+                    </div>
+                    <div class="video-item" data-rating="1">
+                        <iframe src="https://www.youtube.com/embed/NHiEzAEgbRw?si=0temkxp2BAre2yVy&amp;start=1978" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <p class="description">タンヤオ　レア度：★</p>
+                    </div>
+
+
+        </div>
+
+
+    <!-- 新しい動画を追加するためのフォーム -->
+    <div class="input-section">
+        <h2>新しい動画を追加</h2>
+        <label for="video-url">動画URL:</label>
+        <input type="text" id="video-url" placeholder="YouTube動画のURLを入力">
+        <label for="video-description">説明:</label>
+        <input type="text" id="video-description" placeholder="動画の説明">
+        <label for="videoRating">レア度:</label>
+        <select id="videoRating">
+            <option value="1">★</option>
+            <option value="2">★★</option>
+            <option value="3">★★★</option>
+            <option value="4">★★★★</option>
+            <option value="5">★★★★★</option>
+        </select>
+        <button onclick="insertYouTubeVideo()">追加</button>
+    </div>
+
+    <!-- ファイル選択とOCR実行のためのセクション -->
+    <h1>Azure OCR</h1>
+    <input type="file" id="imageInput" />
+    <button onclick="performOCR()">Perform OCR</button>
+    <pre id="output"></pre>
+    <script>
+        async function performOCR() {
+            const imageInput = document.getElementById('imageInput').files[0];
+            if (!imageInput) {
+                document.getElementById('output').innerText = "Please select an image file.";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageInput);
+
+            const response = await fetch('/ocr', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                document.getElementById('output').innerText = result.text;
+            } else {
+                document.getElementById('output').innerText = result.error;
+            }
+        }
+    </script>
+
+    <div class="input-section">
+    <h2>上がり役の確率計算</h2>
+    <label for="winning-hand">上がり役 (役をカンマで区切って入力してください)</label>
+    <input type="text" id="winning-hand" placeholder="例: リーチ,ツモ,ピンフ">
+    <button onclick="calculateProbability()">計算</button>
+
+    <h3>結果</h3>
+    <p id="probability-result">確率: </p>
+    <p id="rarity-result">レア度: </p>
+</div>
+
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
