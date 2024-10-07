@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Upload</title>
+</head>
+<body>
+    <h1>Upload an image to extract text</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+    <p id="status"></p>
+    <a id="downloadLink" style="display: none;">Download Text</a>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData();
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+            formData.append('file', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var downloadLink = document.getElementById('downloadLink');
+                    downloadLink.href = window.URL.createObjectURL(new Blob([xhr.response], {type: 'text/plain'}));
+                    downloadLink.download = 'output.txt';
+                    downloadLink.style.display = 'block';
+                    downloadLink.textContent = 'Download Text';
+                } else {
+                    document.getElementById('status').textContent = 'Error: ' + xhr.responseText;
+                }
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
